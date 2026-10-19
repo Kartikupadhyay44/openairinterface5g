@@ -247,6 +247,37 @@ static inline uint16_t packBits(const uint8_t *toPack, const int nb)
   return res;
 }
 
+int antenna_port_rows(int n_cw, long *max_length, long *dmrs)
+{
+  if (dmrs == NULL) {
+    if (max_length == NULL) {
+      // Table 7.3.1.2.2-1: Antenna port(s) (1000 + DMRS port), dmrs-Type=1, maxLength=1
+      return sizeof(table_7_3_2_3_3_1) / sizeof(table_7_3_2_3_3_1[0]);
+    } else {
+      // Table 7.3.1.2.2-2: Antenna port(s) (1000 + DMRS port), dmrs-Type=1, maxLength=2
+      if (n_cw == 1)
+        return sizeof(table_7_3_2_3_3_2_oneCodeword) / sizeof(table_7_3_2_3_3_2_oneCodeword[0]);
+      if (n_cw == 2)
+        return sizeof(table_7_3_2_3_3_2_twoCodeword) / sizeof(table_7_3_2_3_3_2_twoCodeword[0]);
+    }
+  } else {
+    if (max_length == NULL) {
+      // Table 7.3.1.2.2-3: Antenna port(s) (1000 + DMRS port), dmrs-Type=2, maxLength=1
+      if (n_cw == 1)
+        return sizeof(table_7_3_2_3_3_3_oneCodeword) / sizeof(table_7_3_2_3_3_3_oneCodeword[0]);
+      if (n_cw == 2)
+        return sizeof(table_7_3_2_3_3_3_twoCodeword) / sizeof(table_7_3_2_3_3_3_twoCodeword[0]);
+    } else {
+      // Table 7.3.1.2.2-4: Antenna port(s) (1000 + DMRS port), dmrs-Type=2, maxLength=2
+      if (n_cw == 1)
+        return sizeof(table_7_3_2_3_3_4_oneCodeword) / sizeof(table_7_3_2_3_3_4_oneCodeword[0]);
+      if (n_cw == 2)
+        return sizeof(table_7_3_2_3_3_4_twoCodeword) / sizeof(table_7_3_2_3_3_4_twoCodeword[0]);
+    }
+  }
+  return 0;
+}
+
 void set_antenna_port_parameters(fapi_nr_dl_config_dlsch_pdu_rel15_t *dlsch_pdu, int n_cw, long *max_length, long *dmrs, int ant)
 {
   if (dmrs == NULL) {
